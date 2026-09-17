@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>前端修改详细教程 - AI大全网站</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+body{background:linear-gradient(135deg,#fff8e7,#ffe9b8,#fff3d6);color:#3d2914}
+::-webkit-scrollbar{width:1px;height:1px}
+::-webkit-scrollbar-thumb{background:#d4a017}
+::-webkit-scrollbar-track{background:transparent}
+*{scrollbar-width:thin;scrollbar-color:#d4a017 transparent}
+.nav{padding:12px 20px;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(212,160,23,.2)}
+.nav a{color:#8b6914;text-decoration:none;font-size:15px}
+.wrap{max-width:100%;padding:20px 30px;margin:0 auto}
+.header{text-align:center;padding:30px;background:rgba(255,255,255,.9);border-radius:18px;border:1px solid rgba(212,160,23,.2);margin-bottom:16px}
+.header h1{font-size:32px;color:#8b6914;margin-bottom:8px}
+.header p{font-size:16px;color:#8b6914}
+.section{background:rgba(255,255,255,.9);border-radius:14px;padding:24px;margin-bottom:14px;border:1px solid rgba(212,160,23,.15)}
+.section h2{font-size:20px;color:#8b6914;margin-bottom:14px;border-left:4px solid #d4a017;padding-left:12px}
+.section h3{font-size:18px;color:#8b6914;margin:14px 0 8px}
+.section p{font-size:16px;line-height:2;color:#5a4a2a;margin-bottom:10px}
+.section ul{padding-left:24px;font-size:16px;line-height:2;color:#5a4a2a;margin-bottom:10px}
+.section li{margin-bottom:4px}
+.code-box{position:relative;background:#1e1e2e;border-radius:12px;padding:18px;margin:10px 0;overflow:auto;max-height:500px}
+.code-box pre{color:#a6e3a1;font-size:14px;line-height:1.7;white-space:pre}
+.copy-btn{position:absolute;top:8px;right:8px;padding:5px 14px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;cursor:pointer;font-size:13px}
+.tip{background:rgba(212,160,23,.1);border-left:4px solid #d4a017;padding:12px 16px;border-radius:0 8px 8px 0;margin:10px 0;font-size:15px;color:#8b6914}
+.float-btns{position:fixed;right:0;bottom:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;transition:transform .3s}
+.float-btns.hide{transform:translateX(80px)}
+.fab{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.home-fab{background:linear-gradient(135deg,#f39c12,#e74c3c);color:#fff}
+.svc-fab{background:linear-gradient(135deg,#9b59b6,#3498db);color:#fff;animation:bounce 1.2s infinite}
+.back-top{background:linear-gradient(135deg,#1abc9c,#2ecc71);color:#fff}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.svc-mask{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9998;display:none}
+.svc-mask.show{display:block}
+.svc-panel{position:fixed;right:0;top:0;width:300px;height:100%;background:rgba(255,252,240,.97);backdrop-filter:blur(20px);z-index:9999;padding:24px;overflow-y:auto;transform:translateX(100%);transition:transform .3s;display:none}
+.svc-panel.open{display:block;transform:translateX(0)}
+.svc-panel h3{color:#8b6914;margin-bottom:12px}
+.qr-frame{border:2px solid #d4a017;border-radius:12px;padding:10px;margin:10px auto;width:200px;text-align:center}
+.qr-frame img{width:180px;border-radius:8px}
+.qr-name{text-align:center;font-size:16px;color:#8b6914;margin:8px 0}
+.qr-switch{display:block;margin:8px auto;padding:8px 20px;background:linear-gradient(135deg,#d4a017,#f4d03f);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+.qr-tip{text-align:center;font-size:14px;color:#8b6914;margin:8px 0}
+.wx-id{text-align:center;margin:12px 0;padding:10px;background:rgba(212,160,23,.1);border-radius:8px}
+.wx-label{font-size:14px;color:#8b6914;margin-right:8px}
+.wx-line{font-size:18px;font-weight:bold;color:#e74c3c;cursor:pointer}
+.svc-links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.svc-link{padding:8px;text-align:center;border-radius:8px;text-decoration:none;font-size:13px;color:#fff}
+.svc-link.c1{background:linear-gradient(135deg,#ff6b6b,#ee5a24)}
+.svc-link.c2{background:linear-gradient(135deg,#4834d4,#686de0)}
+.svc-link.c3{background:linear-gradient(135deg:#f0932b,#ff7979)}
+.svc-link.c4{background:linear-gradient(135deg:#6ab04c,#badc58)}
+.svc-link.c5{background:linear-gradient(135deg:#eb4d4b,#ff7979)}
+.svc-link.c6{background:linear-gradient(135deg:#1dd1a1,#10ac84)}
+.svc-link.c7{background:linear-gradient(135deg:#5f27cd,#341f97)}
+.svc-link.c8{background:linear-gradient(135deg:#00d2d3,#54a0ff)}
+</style>
+</head>
+<body>
+<div class="nav"><a href="https://ss1319.github.io/aihd/">← 返回AI大全首页</a></div>
+<div class="wrap">
+<div class="header">
+<h1>🛠️ 前端修改详细教程</h1>
+<p>教你自由修改网站所有细节</p>
+</div>
+
+<div class="section">
+<h2>📁 网站文件结构</h2>
+<p>网站由以下文件组成，每个文件负责不同功能：</p>
+<ul>
+<li><b>index.html</b> — 首页（目录页+搜索框+分类列表）</li>
+<li><b>pages/</b> — AI单页文件夹（每个AI一个HTML文件）</li>
+<li><b>assets/img/</b> — 图片文件夹（赞赏码、公众号二维码）</li>
+<li><b>xgsc.html</b> — 本教程页</li>
+</ul>
+<div class="tip">💡 所有文件都是纯HTML，用任何文本编辑器（记事本、VS Code等）都能修改</div>
+</div>
+
+<div class="section">
+<h2>🎨 修改颜色和主题</h2>
+<h3>金色主题色</h3>
+<p>找到CSS中的以下代码，修改颜色值即可：</p>
+<div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre>/* 主金色 - 改成你喜欢的颜色 */
+background:linear-gradient(135deg,#d4a017,#f4d03f);
+
+/* 标题文字颜色 */
+color:#8b6914;
+
+/* 滚动条颜色 */
+::-webkit-scrollbar-thumb{background:#d4a017}
+
+/* 页面背景渐变 */
+body{background:linear-gradient(135deg,#fff8e7,#ffe9b8,#fff3d6);}</pre></div>
+</div>
+
+<div class="section">
+<h2>🔍 修改搜索源</h2>
+<p>在index.html中找到 <code>var urls</code> 部分，修改搜索接口：</p>
+<div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre>var urls={
+  video:'https://search.bilibili.com/all?keyword='+enc,  // B站视频
+  music:'https://music.163.com/#/search/m/?s='+enc,     // 网易云音乐
+  bing:'https://cn.bing.com/search?q='+enc,              // 必应搜索
+  article:'https://weixin.sogou.com/weixin?type=2&query='+enc,  // 搜狗微信
+  image:'https://image.baidu.com/search/index?tn=baiduimage&word='+enc,  // 百度图片
+  so:'https://www.so.com/s?q='+enc                       // 360搜索
+};</pre></div>
+<div class="tip">⚠️ 注意：不是所有网站都能在iframe中显示，百度/头条等会拒绝嵌入</div>
+</div>
+
+<div class="section">
+<h2>🤖 增加新AI页面</h2>
+<h3>步骤1：创建新HTML文件</h3>
+<p>在pages文件夹中新建一个HTML文件，文件名用英文小写，比如 <code>myai.html</code></p>
+<h3>步骤2：复制模板代码</h3>
+<p>复制任意一个现有AI页面的代码，修改以下内容：</p>
+<ul>
+<li>修改 <code>&lt;title&gt;</code> 中的名称</li>
+<li>修改 <code>&lt;h1&gt;</code> 中的AI名称</li>
+<li>修改 <code>href="官网地址"</code> 中的链接</li>
+<li>修改介绍文字、用途、步骤、代码、链接</li>
+</ul>
+<h3>步骤3：在首页添加入口</h3>
+<p>在index.html的 <code>cats</code> 数组中添加：</p>
+<div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre>// 在对应分类的 items 数组中添加：
+{n:"我的AI",f:"myai",i:"🤖",d:"AI简介"}</pre></div>
+</div>
+
+<div class="section">
+<h2>💬 修改客服面板</h2>
+<p>客服面板代码在每个页面底部，修改以下内容：</p>
+<ul>
+<li><b>赞赏码图片</b>：替换 <code>assets/img/zsm.png</code></li>
+<li><b>公众号二维码</b>：替换 <code>assets/img/wxsy1349.png</code></li>
+<li><b>公众号文字</b>：修改 <code>wxsy1349</code></li>
+<li><b>8个按钮链接</b>：修改 <code>svc-link</code> 的 href</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>⚓ 修改悬浮按钮</h2>
+<p>三个悬浮按钮的样式代码：</p>
+<div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre>/* 🏠 返回主页 - 橙红渐变 */
+.home-fab{background:linear-gradient(135deg,#f39c12,#e74c3c);color:#fff}
+
+/* 💬 客服 - 紫蓝渐变+跳动动画 */
+.svc-fab{background:linear-gradient(135deg,#9b59b6,#3498db);color:#fff;animation:bounce 1.2s infinite}
+
+/* 🚀 返回顶部 - 青绿渐变 */
+.back-top{background:linear-gradient(135deg,#1abc9c,#2ecc71);color:#fff}
+
+/* 按钮大小 - 修改32px为你想要的尺寸 */
+.fab{width:32px;height:32px}</pre></div>
+</div>
+
+<div class="section">
+<h2>📝 修改字体大小</h2>
+<div class="code-box"><button class="copy-btn" onclick="copyCode(this)">复制</button><pre>/* 正文 - 默认16px */
+.section p{font-size:16px;line-height:2}
+
+/* 页面大标题 - 默认32px */
+.header h1{font-size:32px}
+
+/* 小标题 - 默认20px */
+.section h2{font-size:20px}
+
+/* 代码块 - 默认14px */
+.code-box pre{font-size:14px}</pre></div>
+</div>
+
+<div class="section">
+<h2>📤 如何上传修改到GitHub</h2>
+<h3>方法1：GitHub网页上传（最简单）</h3>
+<ul>
+<li>打开 https://github.com/ss1319/aihd</li>
+<li>点击 Add file → Upload files</li>
+<li>拖拽修改后的文件</li>
+<li>点击 Commit changes</li>
+<li>等待1-2分钟，刷新 https://ss1319.github.io/aihd/ 看效果</li>
+</ul>
+<h3>方法2：GitHub Desktop（桌面软件）</h3>
+<ul>
+<li>打开 GitHub Desktop 3.5.4</li>
+<li>选择 aihd 仓库</li>
+<li>修改文件后，左侧会显示变更</li>
+<li>填写修改说明，点击 Commit to main</li>
+<li>点击 Push origin 上传</li>
+<li>等待1-2分钟看效果</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>🔧 常用修改速查</h2>
+<ul>
+<li><b>改AI名称</b>：搜索名称，替换成新名称</li>
+<li><b>改官网链接</b>：搜索旧链接，替换成新链接</li>
+<li><b>改简介</b>：找到对应介绍段落，直接修改文字</li>
+<li><b>改图标</b>：把emoji图标（🤖）换成你喜欢的emoji</li>
+<li><b>改按钮颜色</b>：找到对应CSS类，修改渐变色</li>
+<li><b>改滚动条粗细</b>：把 <code>width:1px</code> 改成你想要的粗细</li>
+</ul>
+<div class="tip">💡 修改后按 Ctrl+S 保存，然后上传到GitHub，等待2分钟刷新即可看到效果</div>
+</div>
+
+</div>
+
+<div class="float-btns" id="floatBtns">
+<button class="fab home-fab" onclick="location.href='https://ss1319.github.io/aihd/'">🏠</button>
+<button class="fab svc-fab" id="svcToggle">💬</button>
+<button class="fab back-top" id="backTop">🚀</button>
+</div>
+<div class="svc-mask" id="svcMask"></div>
+<div class="svc-panel" id="svcPanel">
+<h3>💬 联系客服</h3>
+<div class="qr-frame"><img id="qrImg" src="assets/img/zsm.png"></div>
+<div class="qr-name" id="qrName">赞赏二维码</div>
+<button class="qr-switch" onclick="switchQr()">切换到公众号</button>
+<p class="qr-tip">欢迎自愿赞赏支持作者</p>
+<div class="wx-id"><span class="wx-label">微信公众号</span><span class="wx-line" id="wxLine">wxsy1349</span></div>
+<div class="svc-links">
+<a class="svc-link c1" href="https://app.kwaixiaodian.com/page/kwaishop-store-c-frame-h5/frame?layoutType=4&hyId=kwaishop-store-c-frame-h5&sellerId=1865090819&authorId=1865090819&carrierType=29&carrierId=fva0b4kfnGw&entrance=xdhtlj" target="_blank">🛒 快手小店</a>
+<a class="svc-link c2" href="https://pd.qq.com/s/24yp7y38f" target="_blank">💬 腾讯频道</a>
+<a class="svc-link c3" href="https://www.zhihu.com/people/z6391" target="_blank">💡 知乎</a>
+<a class="svc-link c4" href="https://qm.qq.com/q/VHeRTTdQcu" target="_blank">👥 QQ群</a>
+<a class="svc-link c5" href="https://bolt.cello.so/lsypink3QTR" target="_blank">⚡ 在线编程</a>
+<a class="svc-link c6" href="https://api.u-claw.org/register?aff=9OLG" target="_blank">🦞 OpenClaw</a>
+<a class="svc-link c7" href="https://weibo.com/zdzqxt" target="_blank">📢 微博</a>
+<a class="svc-link c8" href="https://txc.qq.com/embed/367382/new-post/" target="_blank">✍️ 欢迎留言</a>
+</div></div>
+
+<script>
+function copyCode(b){navigator.clipboard.writeText(b.parentElement.querySelector("pre").textContent);b.textContent="已复制";setTimeout(()=>b.textContent="复制",1500);}
+var st=document.getElementById("svcToggle"),sp=document.getElementById("svcPanel"),sm=document.getElementById("svcMask");
+st.onclick=function(e){e.stopPropagation();sp.classList.toggle("open");sm.classList.toggle("show");};
+sm.onclick=function(){sp.classList.remove("open");sm.classList.remove("show");};
+document.onclick=function(e){if(sp.classList.contains("open")&&!sp.contains(e.target)&&e.target!==st){sp.classList.remove("open");sm.classList.remove("show");}};
+var wq=false;function switchQr(){wq=!wq;document.getElementById("qrImg").src=wq?"assets/img/wxsy1349.png":"assets/img/zsm.png";document.getElementById("qrName").textContent=wq?"微信公众号":"赞赏二维码";event.target.textContent=wq?"切换到赞赏码":"切换到公众号";}
+document.getElementById("wxLine").onmouseenter=function(){navigator.clipboard.writeText("wxsy1349");};
+document.getElementById("backTop").onclick=function(){window.scrollTo({top:0,behavior:"smooth"});};
+var t;window.onscroll=function(){document.getElementById("floatBtns").classList.add("hide");clearTimeout(t);t=setTimeout(function(){document.getElementById("floatBtns").classList.remove("hide");},300);};
+</script>
+</body>
+</html>
