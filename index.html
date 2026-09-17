@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>全国中文AI大全 - 万能嗅探搜索</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+body{background:linear-gradient(135deg,#fff8e7,#ffe9b8,#fff3d6);color:#3d2914}
+::-webkit-scrollbar{width:1px;height:1px}
+::-webkit-scrollbar-thumb{background:#d4a017}
+::-webkit-scrollbar-track{background:transparent}
+*{scrollbar-width:thin;scrollbar-color:#d4a017 transparent}
+.top{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);padding:14px 20px;border-bottom:1px solid rgba(212,160,23,.25)}
+.top h1{font-size:22px;text-align:center;margin-bottom:12px;background:linear-gradient(135deg,#b8860b,#d4a017);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.search-row{display:flex;gap:8px;max-width:700px;margin:0 auto}
+.search-row input{flex:1;padding:11px 20px;border:1.5px solid #d4a017;border-radius:25px;font-size:16px;background:#fff;outline:none}
+.search-row button{padding:11px 26px;border:none;border-radius:25px;background:linear-gradient(135deg,#d4a017,#f4d03f);color:#fff;font-size:16px;cursor:pointer;font-weight:bold}
+.search-tabs{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.stab{padding:6px 16px;border:1.5px solid #d4a017;border-radius:18px;background:transparent;color:#8b6914;cursor:pointer;font-size:14px}
+.stab.active{background:linear-gradient(135deg,#d4a017,#f4d03f);color:#fff;border-color:transparent}
+.sr-box{display:none;max-width:100%;margin:12px auto;background:#fff;border:1px solid #d4a017;border-radius:12px;overflow:hidden}
+.sr-title{padding:10px 16px;background:rgba(212,160,23,.1);font-size:16px;color:#8b6914;font-weight:bold}
+.sr-content{padding:0;max-height:600px;overflow-y:auto}
+.sr-content iframe{width:100%;height:600px;border:0}
+.main{max-width:100%;padding:20px 30px;margin:0 auto}
+.cat{margin-bottom:14px}
+.cat-header{padding:14px 18px;background:linear-gradient(135deg,rgba(212,160,23,.15),rgba(244,208,63,.08));border:1px solid rgba(212,160,23,.3);border-radius:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:18px;color:#8b6914;font-weight:bold}
+.cat-header::after{content:"▼";font-size:12px;color:#d4a017;transition:.2s}
+.cat.open .cat-header::after{transform:rotate(180deg)}
+.cat-body{max-height:0;overflow:hidden;transition:max-height .4s}
+.cat.open .cat-body{max-height:9999px}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;padding:14px}
+.card{display:block;padding:16px;background:rgba(255,255,255,.9);border:1px solid rgba(212,160,23,.2);border-radius:12px;text-decoration:none;color:#3d2914;transition:.2s}
+.card:hover{background:#fff;box-shadow:0 4px 15px rgba(212,160,23,.15);transform:translateY(-2px)}
+.card .icon{font-size:30px;margin-bottom:6px}
+.card h4{font-size:16px;color:#8b6914;margin-bottom:4px}
+.card p{font-size:13px;color:#999}
+.float-btns{position:fixed;right:0;bottom:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;transition:transform .3s}
+.float-btns.hide{transform:translateX(80px)}
+.fab{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.home-fab{background:linear-gradient(135deg,#f39c12,#e74c3c);color:#fff}
+.svc-fab{background:linear-gradient(135deg,#9b59b6,#3498db);color:#fff;animation:bounce 1.2s infinite}
+.back-top{background:linear-gradient(135deg,#1abc9c,#2ecc71);color:#fff}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.svc-mask{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:9998;display:none}
+.svc-mask.show{display:block}
+.svc-panel{position:fixed;right:0;top:0;width:300px;height:100%;background:rgba(255,252,240,.97);backdrop-filter:blur(20px);z-index:9999;padding:24px;overflow-y:auto;transform:translateX(100%);transition:transform .3s;display:none}
+.svc-panel.open{display:block;transform:translateX(0)}
+.panel-title{text-align:center;color:#8b6914;font-size:18px;margin-bottom:18px;font-weight:bold}
+.qr-frame{width:160px;height:160px;margin:0 auto;border:2px solid #d4a017;border-radius:14px;overflow:hidden;background:#fff}
+.qr-frame img{width:100%;height:100%;object-fit:cover}
+.qr-name{text-align:center;color:#888;font-size:14px;margin-top:10px}
+.qr-switch{display:block;margin:10px auto;padding:6px 16px;border:1.5px solid #d4a017;background:transparent;color:#8b6914;border-radius:16px;cursor:pointer;font-size:14px}
+.qr-tip{text-align:center;color:#999;font-size:14px;margin:10px 0}
+.wx-id{text-align:center;margin:16px 0}
+.wx-label{display:block;color:#999;font-size:14px}
+.wx-line{display:block;font-size:22px;font-weight:bold;background:linear-gradient(90deg,#ff6b6b,#feca57,#48dbfb,#ff9ff3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.svc-links{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.svc-link{width:48%;padding:10px;border-radius:10px;text-align:center;text-decoration:none;color:#fff;font-size:13px;display:block}
+.c1{background:linear-gradient(135deg,#ff6b6b,#ee5a6f)}.c2{background:linear-gradient(135deg,#48dbfb,#0abde3)}
+.c3{background:linear-gradient(135deg,#ff9ff3,#f368e0)}.c4{background:linear-gradient(135deg,#54a0ff,#5f27cd)}
+.c5{background:linear-gradient(135deg,#54ca6b,#27ae60)}.c6{background:linear-gradient(135deg,#ff9f43,#e67e22)}
+.c7{background:linear-gradient(135deg,#00d2d3,#01a3a8)}.c8{background:linear-gradient(135deg,#a55eea,#8854d0)}
+</style>
+</head>
+<body>
+<div class="top">
+<h1>🤖 全国中文AI大全 · 万能嗅探搜索</h1>
+<div class="search-row">
+<input type="text" id="kw" placeholder="输入关键词：AI教程/周杰伦/编程..." autocomplete="off">
+<button onclick="doSearch()">🔍 搜索</button>
+</div>
+<div class="search-tabs">
+<button class="stab active" data-s="video">📺 视频</button>
+<button class="stab" data-s="music">🎵 音乐</button>
+<button class="stab" data-s="bing">🔍 必应</button>
+<button class="stab" data-s="article">📄 文章</button>
+<button class="stab" data-s="image">🖼️ 图片</button>
+<button class="stab" data-s="so">🌐 360</button>
+</div>
+<div class="sr-box" id="srBox">
+<div class="sr-title" id="srTitle"></div>
+<div class="sr-content" id="srContent"></div>
+</div>
+</div>
+<div class="main" id="aiList"></div>
+<div class="float-btns" id="floatBtns">
+<button class="fab home-fab" onclick="location.href='index.html'">🏠</button>
+<button class="fab svc-fab" id="svcToggle">💬</button>
+<button class="fab back-top" id="backTop">🚀</button>
+</div>
+<div class="svc-mask" id="svcMask"></div>
+<div class="svc-panel" id="svcPanel">
+<div class="panel-title">💬 联系客服</div>
+<div class="qr-frame"><img id="qrImg" src="assets/img/zsm.png"></div>
+<div class="qr-name" id="qrName">赞赏二维码</div>
+<button class="qr-switch" onclick="switchQr()">切换到公众号</button>
+<p class="qr-tip">欢迎自愿赞赏支持作者</p>
+<div class="wx-id"><span class="wx-label">微信公众号</span><span class="wx-line" id="wxLine">wxsy1349</span></div>
+<div class="svc-links">
+<a class="svc-link c1" href="https://app.kwaixiaodian.com/page/kwaishop-store-c-frame-h5/frame?layoutType=4&hyId=kwaishop-store-c-frame-h5&sellerId=1865090819&authorId=1865090819&carrierType=29&carrierId=fva0b4kfnGw&entrance=xdhtlj" target="_blank">🛒 快手小店</a>
+<a class="svc-link c2" href="https://pd.qq.com/s/24yp7y38f" target="_blank">💬 腾讯频道</a>
+<a class="svc-link c3" href="https://www.zhihu.com/people/z6391" target="_blank">💡 知乎</a>
+<a class="svc-link c4" href="https://qm.qq.com/q/VHeRTTdQcu" target="_blank">👥 QQ群</a>
+<a class="svc-link c5" href="https://bolt.cello.so/lsypink3QTR" target="_blank">⚡ 在线编程</a>
+<a class="svc-link c6" href="https://api.u-claw.org/register?aff=9OLG" target="_blank">🦞 OpenClaw</a>
+<a class="svc-link c7" href="https://weibo.com/zdzqxt" target="_blank">📢 微博</a>
+<a class="svc-link c8" href="https://txc.qq.com/embed/367382/new-post/" target="_blank">✍️ 欢迎留言</a>
+</div>
+</div>
+<script>
+var cats=[
+{name:"🟢 普通对话型AI",items:[
+{n:"豆包",f:"doubao",i:"🤖",d:"字节跳动AI助手"},{n:"DeepSeek",f:"deepseek",i:"🧠",d:"深度求索"},
+{n:"Kimi",f:"kimi",i:"🌙",d:"月之暗面"},{n:"通义千问",f:"tongyi",i:"🟠",d:"阿里"},
+{n:"文心一言",f:"wenxin",i:"🟡",d:"百度"},{n:"智谱清言",f:"zhipu",i:"🔷",d:"智谱"},
+{n:"讯飞星火",f:"xinghuo",i:"🔥",d:"讯飞"},{n:"腾讯混元",f:"hunyuan",i:"🌀",d:"腾讯"},
+{n:"百川",f:"baichuan",i:"🌊",d:"百川"},{n:"MiniMax",f:"minimax",i:"💎",d:"MiniMax"},
+{n:"360智脑",f:"360gpt",i:"🟢",d:"360"},{n:"文心素食助手",f:"wenxin-vegan",i:"🥗",d:"百度智能体"},
+{n:"天工AI",f:"tiangong",i:"🌌",d:"昆仑万维"},{n:"零一万物",f:"01ai",i:"🌐",d:"李开复"},
+{n:"商量SenseChat",f:"sensechat",i:"👁️",d:"商汤"},{n:"元器",f:"yuanqi",i:"🧩",d:"字节智能体"},
+{n:"星野",f:"xingye",i:"✨",d:"MiniMax星野"},{n:"Glow",f:"glow",i:"💫",d:"对话AI"},
+{n:"出门问问问道",f:"wenwen",i:"🔍",d:"序列猴子"},{n:"知乎直答",f:"zhihuida",i:"💡",d:"知乎AI"},
+{n:"纳米AI搜索",f:"nami",i:"🧭",d:"360AI搜索"},{n:"华为盘古",f:"pangu",i:"☁️",d:"华为大模型"},
+{n:"京东言犀",f:"yanxi",i:"🐦",d:"京东大模型"},{n:"网易子曰",f:"ziyue",i:"📝",d:"网易大模型"},
+{n:"百度文库AI",f:"wendang",i:"📄",d:"百度写作"},{n:"钉钉AI",f:"dingtalk",i:"📌",d:"阿里办公"},
+{n:"飞书智能伙伴",f:"feishu",i:"🐦",d:"字节办公"},{n:"有道AI",f:"youdao",i:"📖",d:"网易学习"},
+{n:"讯飞听见",f:"tingjian",i:"🎙️",d:"语音转文字"},{n:"百度翻译",f:"fanyi",i:"🌐",d:"机器翻译"},
+{n:"作业帮AI",f:"zuoyebang",i:"📚",d:"作业辅导"}]},
+{name:"🔵 自定义模型/API类",items:[
+{n:"OpenAI",f:"openai",i:"⚪",d:"GPT API"},{n:"Claude",f:"claude",i:"🟠",d:"Anthropic"},
+{n:"Gemini",f:"gemini",i:"💎",d:"谷歌"},{n:"DeepSeek API",f:"deepseek-api",i:"🧠",d:"深度求索API"},
+{n:"月之暗面API",f:"moonshot-api",i:"🌙",d:"Kimi API"},{n:"智谱API",f:"zhipu-api",i:"🔷",d:"智谱API"},
+{n:"百川API",f:"baichuan-api",i:"🌊",d:"百川API"},{n:"MiniMax API",f:"minimax-api",i:"💎",d:"MiniMax API"},
+{n:"OpenRouter",f:"openrouter",i:"🔀",d:"模型聚合"},{n:"硅基流动",f:"siliconflow",i:"⚡",d:"SiliconFlow"},
+{n:"灵犀",f:"skylark",i:"🦅",d:"火山引擎"},{n:"阿里云百炼",f:"dashscope",i:"☁️",d:"阿里百炼"},
+{n:"Groq",f:"groq",i:"⚡",d:"超快推理"},{n:"Together AI",f:"together",i:"🤝",d:"开源模型API"},
+{n:"HuggingFace",f:"huggingface",i:"🤗",d:"模型社区"}]},
+{name:"🟣 Agent自动化工作型",items:[
+{n:"Coze扣子",f:"coze",i:"🟣",d:"字节智能体"},{n:"Dify",f:"dify",i:"🔧",d:"开源LLM平台"},
+{n:"FastGPT",f:"fastgpt",i:"⚡",d:"知识库"},{n:"AutoGen",f:"autogen",i:"🤖",d:"微软"},
+{n:"CrewAI",f:"crewai",i:"👥",d:"多Agent"},{n:"LangChain",f:"langchain",i:"⛓️",d:"LLM框架"},
+{n:"n8n",f:"n8n",i:"🔄",d:"自动化"},{n:"IFTTT",f:"ifttt",i:"⚡",d:"自动化"},
+{n:"Zapier",f:"zapier",i:"⚡",d:"自动化"},{n:"Make",f:"make",i:"🎬",d:"可视化"},
+{n:"OpenClaw虾盘云",f:"openclaw",i:"🦞",d:"虾盘云"},{n:"实在智能Agent",f:"shizai",i:"🤖",d:"实在RPA"},
+{n:"腾讯WorkBuddy",f:"workbuddy",i:"💼",d:"腾讯"},{n:"爱派Aipy",f:"aipy",i:"💡",d:"Aipy"},
+{n:"百度AppBuilder",f:"appbuilder",i:"🔨",d:"百度智能体"},{n:"Flowise",f:"flowise",i:"🌊",d:"可视化LLM"},
+{n:"LangFlow",f:"langflow",i:"🔬",d:"LangFlow"},{n:"Semantic Kernel",f:"semantickernel",i:"🧠",d:"微软SDK"},
+{n:"字节HiAgent",f:"hiagent",i:"🤖",d:"企业智能体"},{n:"腾讯HiFlow",f:"hiflow",i:"🔄",d:"腾讯工作流"}]},
+{name:"🟡 RPA类AI",items:[
+{n:"影刀RPA",f:"yingdao",i:"🤖",d:"影刀"},{n:"UiBot",f:"uibot",i:"🤖",d:"UiBot"},
+{n:"UiPath",f:"uipath",i:"🤖",d:"UiPath"},{n:"Automation Anywhere",f:"automationanywhere",i:"🤖",d:"AA"},
+{n:"Power Automate",f:"powerautomate",i:"⚡",d:"微软"},{n:"来也RPA",f:"laiye",i:"🤖",d:"来也科技"},
+{n:"艺赛旗",f:"i-search",i:"🔍",d:"iS-RPA"},{n:"Blue Prism",f:"blueprism",i:"🔷",d:"Blue Prism"},
+{n:"弘玑Cyclone",f:"cyclone",i:"🔄",d:"弘玑"},{n:"金智维",f:"kingdee",i:"👑",d:"金智维"},
+{n:"云扩科技",f:"cloudext",i:"☁️",d:"云扩"},{n:"达观数据",f:"datagrand",i:"📄",d:"达观"}]},
+{name:"🔴 生产类AI",items:[
+{n:"PixVerse",f:"pixverse",i:"🎥",d:"AI视频"},{n:"Runway",f:"runway",i:"🎞️",d:"AI视频"},
+{n:"Canva",f:"canva",i:"🎨",d:"设计"},{n:"Gamma",f:"gamma",i:"📊",d:"AI PPT"},
+{n:"剪映",f:"capcut",i:"✂️",d:"剪辑"},{n:"秒哒",f:"miaoda",i:"⚡",d:"全能AI"},
+{n:"沸推AI",f:"feitui",i:"📢",d:"营销"},{n:"飞影数字人",f:"feiying",i:"🧑",d:"数字人"},
+{n:"LiblibAI",f:"liblib",i:"🎨",d:"生图"},{n:"可灵AI",f:"kling",i:"🎬",d:"快手视频"},
+{n:"即梦AI",f:"jimeng",i:"💫",d:"字节即梦"},{n:"Vidu",f:"vidu",i:"🎨",d:"生数视频"},
+{n:"Pika",f:"pika",i:"⚡",d:"Pika视频"},{n:"D-ID",f:"did",i:"🗣️",d:"数字人"},
+{n:"HeyGen",f:"heygen",i:"🧑",d:"AI数字人"},{n:"Midjourney",f:"midjourney",i:"🖼️",d:"AI绘画"},
+{n:"即梦生图",f:"jimeng-img",i:"🎨",d:"字节生图"},{n:"WPS AI",f:"wpsai",i:"📝",d:"办公AI"},
+{n:"秘塔AI搜索",f:"metaso",i:"🔍",d:"AI搜索"},{n:"文心一格",f:"yiyan",i:"🎨",d:"百度生图"},
+{n:"通义万相",f:"wanxiang",i:"🖌️",d:"阿里生图"},{n:"腾讯智影",f:"zhiying",i:"🎬",d:"腾讯视频"},
+{n:"硅基智能",f:"guiji",i:"🤖",d:"数字人"},{n:"魔珐科技",f:"mofa",i:"🎭",d:"虚拟人"},
+{n:"Suno AI",f:"suno",i:"🎵",d:"AI音乐"},{n:"讯飞配音",f:"peiyin",i:"🗣️",d:"AI配音"},
+{n:"火山引擎语音",f:"volcvoice",i:"🔊",d:"TTS"},{n:"网易天音",f:"tianyin",i:"🎼",d:"AI音乐"},
+{n:"海绵音乐",f:"haimian",i:"🎵",d:"字节音乐"},{n:"百度曦灵",f:"xiling",i:"🧑",d:"数字人"},
+{n:"快影",f:"kuaiging",i:"✂️",d:"快手剪辑"},{n:"必剪",f:"bcut",i:"✂️",d:"B站剪辑"},
+{n:"美图WHEE",f:"whee",i:"🎨",d:"美图生图"},{n:"巨量星图",f:"xingtu",i:"✨",d:"达人营销"}]},
+{name:"🟢 离线/本地部署类",items:[
+{n:"Ollama",f:"ollama",i:"🦙",d:"本地模型"},{n:"LM Studio",f:"lmstudio",i:"💻",d:"桌面"},
+{n:"GPT4All",f:"gpt4all",i:"🔒",d:"离线"},{n:"Llama.cpp",f:"llama-cpp",i:"📦",d:"GGUF"},
+{n:"KoboldCpp",f:"koboldcpp",i:"💬",d:"角色扮演"},{n:"Oobabooga",f:"text-generation-webui",i:"🌐",d:"WebUI"},
+{n:"Xinference",f:"xinference",i:"🎯",d:"推理"},{n:"vLLM",f:"vllm",i:"⚡",d:"高性能"},
+{n:"AnythingLLM",f:"anything-llm",i:"📚",d:"知识库"},{n:"MCP协议",f:"mcp",i:"🔌",d:"上下文协议"},
+{n:"Open WebUI",f:"openwebui",i:"🌐",d:"Ollama前端"},{n:"LibreChat",f:"librechat",i:"💬",d:"开源ChatGPT"},
+{n:"Jan",f:"jan",i:"📱",d:"本地AI"},{n:"Msty",f:"msty",i:"🧪",d:"本地AI"}]},
+{name:"🔵 编程开发类AI",items:[
+{n:"GitHub Copilot",f:"githubcopilot",i:"🐱",d:"代码助手"},{n:"Cursor",f:"cursor",i:"✏️",d:"AI编辑器"},
+{n:"Trae",f:"trae",i:"🚀",d:"字节IDE"},{n:"通义灵码",f:"tongyi-lingma",i:"🐉",d:"阿里"},
+{n:"CodeGeeX",f:"codegeex",i:"💻",d:"智谱代码"},{n:"Codeium",f:"codeium",i:"💨",d:"免费补全"},
+{n:"Bolt在线编程",f:"bolt",i:"⚡",d:"在线编程"},{n:"学会打字",f:"typefun",i:"⌨️",d:"学打字"},
+{n:"Windsurf",f:"windsurf",i:"🌊",d:"AI IDE"},{n:"Tabnine",f:"tabnine",i:"⚡",d:"代码补全"},
+{n:"Aider",f:"aider",i:"✏️",d:"终端AI"},{n:"Continue",f:"continue",i:"🔄",d:"开源助手"},
+{n:"Amazon Q",f:"amazonq",i:"💬",d:"AWS助手"},{n:"Cody",f:"cody",i:"💻",d:"Sourcegraph"}]},
+{name:"🟠 云服务/平台类",items:[
+{n:"Azure OpenAI",f:"azure",i:"☁️",d:"微软"},{n:"Notion AI",f:"notionai",i:"📝",d:"Notion"},
+{n:"阶跃Step",f:"stepfun",i:"📈",d:"阶跃星辰"},{n:"ChatGLM",f:"chatglm",i:"💬",d:"智谱对话"},
+{n:"AWS Bedrock",f:"bedrock",i:"☁️",d:"亚马逊"},{n:"Vertex AI",f:"vertex",i:"🔷",d:"谷歌云"},
+{n:"HuggingFace",f:"hf",i:"🤗",d:"模型库"},{n:"Papers with Code",f:"papers",i:"📄",d:"论文代码"},
+{n:"第四范式",f:"4paradigm",i:"🔬",d:"企业AI"},{n:"旷视Face++",f:"megvii",i:"👁️",d:"人脸识别"},
+{n:"云从科技",f:"cloudwalk",i:"☁️",d:"人机协同"},{n:"拓尔思",f:"trs",i:"📊",d:"智能问答"},
+{n:"同花顺问财",f:"iwencai",i:"💰",d:"智能选股"},{n:"蚂蚁百灵",f:"ling",i:"🐦",d:"金融AI"},
+{n:"火山方舟",f:"ark",i:"🚀",d:"字节大模型"}]},
+{name:"🎓 教育学习类AI",items:[
+{n:"猿辅导",f:"yuanfudao",i:"📚",d:"在线辅导"},{n:"学而思",f:"xueersi",i:"📖",d:"好未来"},
+{n:"斑马AI课",f:"zebra",i:"🦓",d:"儿童教育"},{n:"粉笔",f:"fenbi",i:"✏️",d:"公考"},
+{n:"高途",f:"gaotu",i:"📈",d:"在线教育"},{n:"新东方",f:"dongfang",i:"🎓",d:"语言学习"},
+{n:"极客时间",f:"jikeshijian",i:"⏱️",d:"IT学习"},{n:"慕课网",f:"lianxi",i:"💻",d:"编程学习"}]},
+{name:"🎨 设计创意类AI",items:[
+{n:"稿定设计",f:"gaoding",i:"🎨",d:"在线设计"},{n:"创客贴",f:"chuangke",i:"🎨",d:"设计模板"},
+{n:"图怪兽",f:"tuguaishou",i:"🖼️",d:"图片设计"},{n:"黄油相机",f:"huangyou",i:"📸",d:"拍照修图"},
+{n:"飞瓜数据",f:"xingtu",i:"📊",d:"短视频数据"},{n:"蝉妈妈",f:"chanmama",i:"🦗",d:"抖音电商"},
+{n:"新榜",f:"xinbang",i:"📰",d:"新媒体数据"}]},
+{name:"💼 办公效率类AI",items:[
+{n:"企业微信",f:"qiyeweixin",i:"💬",d:"企业办公"},{n:"腾讯文档",f:"tencentdocs",i:"📝",d:"在线文档"},
+{n:"金山文档",f:"jinshan",i:"📊",d:"在线办公"},{n:"语雀",f:"yuque",i:"📚",d:"知识库"},
+{n:"印象笔记",f:"yinxiang",i:"📒",d:"笔记管理"},{n:"幕布",f:"mubu",i:"📋",d:"大纲笔记"},
+{n:"腾讯会议",f:"tencentmeeting",i:"🎥",d:"视频会议"},{n:"搜狗输入法",f:"sogouinput",i:"⌨️",d:"中文输入"},
+{n:"百度输入法",f:"baidushurufa",i:"⌨️",d:"中文输入"},{n:"讯飞输入法",f:"iflytekinput",i:"⌨️",d:"语音输入"}]},
+{name:"🏭 企业服务类AI",items:[
+{n:"明略科技",f:"mingluo",i:"📊",d:"数据智能"},{n:"依图科技",f:"yitu",i:"👁️",d:"计算机视觉"},
+{n:"海康威视",f:"hikvision",i:"📹",d:"智能安防"},{n:"大华股份",f:"dahua",i:"📹",d:"安防"},
+{n:"大疆",f:"dji",i:"🚁",d:"无人机"},{n:"科沃斯",f:"ecovacs",i:"🤖",d:"服务机器人"},
+{n:"石头科技",f:"roborock",i:"🏠",d:"扫地机器人"}]},
+{name:"🏥 医疗健康类AI",items:[
+{n:"平安好医生",f:"pingan",i:"🏥",d:"在线医疗"},{n:"丁香医生",f:"dxy",i:"💊",d:"健康科普"},
+{n:"微医",f:"weiyi",i:"🏥",d:"挂号问诊"},{n:"春雨医生",f:"chunyu",i:"📱",d:"移动医疗"},
+{n:"京东健康",f:"jdhealth",i:"💊",d:"在线买药"},{n:"阿里健康",f:"alikang",i:"💊",d:"阿里医疗"},
+{n:"推想医疗",f:"tuixiang",i:"🔬",d:"AI影像"},{n:"数坤科技",f:"shukun",i:"🫀",d:"心脑血管"}]},
+{name:"💰 金融与生活服务",items:[
+{n:"东方财富",f:"eastmoney",i:"📈",d:"财经数据"},{n:"度小满",f:"duxiaoman",i:"💰",d:"金融科技"},
+{n:"美团",f:"meituan",i:"🍔",d:"本地生活"},{n:"饿了么",f:"eleme",i:"🍱",d:"外卖"},
+{n:"滴滴出行",f:"didi",i:"🚗",d:"网约车"},{n:"高德地图",f:"amap",i:"🗺️",d:"导航"},
+{n:"携程",f:"ctrip",i:"✈️",d:"旅游"},{n:"夸克",f:"quark",i:"🔍",d:"智能搜索"},
+{n:"百度问一问",f:"wenyi",i:"💬",d:"AI问答"},{n:"腾讯元宝",f:"yuanbao",i:"🫘",d:"腾讯助手"},
+{n:"腾讯翻译君",f:"translator",i:"🌐",d:"AI翻译"},{n:"极速数据",f:"jisu",i:"⚡",d:"数据API"},
+{n:"天行数据",f:"tianapi",i:"☁️",d:"数据API"}]}
+];
+var list=document.getElementById("aiList");
+cats.forEach(function(cat,idx){
+  var d=document.createElement("div");
+  d.className="cat"+(idx===0?" open":"");
+  var g=cat.items.map(function(it){
+    return '<a class="card" href="pages/'+it.f+'.html" target="_blank"><div class="icon">'+it.i+'</div><h4>'+it.n+'</h4><p>'+it.d+'</p></a>';
+  }).join("");
+  d.innerHTML='<div class="cat-header">'+cat.name+' ('+cat.items.length+')</div><div class="cat-body"><div class="card-grid">'+g+'</div></div>';
+  d.querySelector(".cat-header").onclick=function(){d.classList.toggle("open");};
+  list.appendChild(d);
+});
+var curTab="video";
+document.querySelectorAll(".stab").forEach(function(s){
+  s.onclick=function(){document.querySelectorAll(".stab").forEach(function(x){x.classList.remove("active");});s.classList.add("active");curTab=s.dataset.s;};
+});
+document.getElementById("kw").addEventListener("keydown",function(e){if(e.key==="Enter")doSearch();});
+function doSearch(){
+  var kw=document.getElementById("kw").value.trim();
+  if(!kw){alert("请输入关键词");return;}
+  document.getElementById("srBox").style.display="block";
+  document.getElementById("srTitle").textContent="🔍 "+kw;
+  var enc=encodeURIComponent(kw);
+  var urls={
+    video:'https://search.bilibili.com/all?keyword='+enc,
+    music:'https://music.163.com/#/search/m/?s='+enc+'&type=1',
+    bing:'https://cn.bing.com/search?q='+enc,
+    article:'https://weixin.sogou.com/weixin?type=2&query='+enc+'&ie=utf8',
+    image:'https://image.baidu.com/search/index?tn=baiduimage&word='+enc,
+    so:'https://www.so.com/s?q='+enc
+  };
+  document.getElementById("srContent").innerHTML='<iframe src="'+urls[curTab]+'"></iframe>';
+  document.getElementById("srBox").scrollIntoView({behavior:"smooth"});
+}
+var st=document.getElementById("svcToggle"),sp=document.getElementById("svcPanel"),sm=document.getElementById("svcMask");
+st.onclick=function(e){e.stopPropagation();sp.classList.toggle("open");sm.classList.toggle("show");};
+sm.onclick=function(){sp.classList.remove("open");sm.classList.remove("show");};
+document.onclick=function(e){if(sp.classList.contains("open")&&!sp.contains(e.target)&&e.target!==st){sp.classList.remove("open");sm.classList.remove("show");}};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){sp.classList.remove("open");sm.classList.remove("show");}});
+var wq=false;
+function switchQr(){wq=!wq;document.getElementById("qrImg").src=wq?"assets/img/wxsy1349.png":"assets/img/zsm.png";document.getElementById("qrName").textContent=wq?"微信公众号":"赞赏二维码";event.target.textContent=wq?"切换到赞赏码":"切换到公众号";}
+document.getElementById("wxLine").onmouseenter=function(){navigator.clipboard.writeText("wxsy1349");};
+document.getElementById("backTop").onclick=function(){window.scrollTo({top:0,behavior:"smooth"});};
+var t;window.onscroll=function(){document.getElementById("floatBtns").classList.add("hide");clearTimeout(t);t=setTimeout(function(){document.getElementById("floatBtns").classList.remove("hide");},300);};
+</script>
+</body>
+</html>
